@@ -1,0 +1,19 @@
+name: flutter_smart_line_chart
+description: 一个使用纯Dart语言开发的Flutter 折线图插件，代码参考了一些开源的图表插件，适合中国风格的折线图展示
+version: 0.0.1
+author: 冰冰同学
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: 0.16.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
