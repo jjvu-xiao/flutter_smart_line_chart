@@ -21,7 +21,8 @@ class LineChart {
   //The lines / points should only draw to 5/6 from the top of the chart area
 
   static final double axisMargin = 5.0;
-  static final double axisOffsetPX = 50.0;
+  // static final double axisOffsetPX = 50.0;
+  static final double axisOffsetPX = 10.0;
   static final double stepCount = 5;
 
   final List<ChartLine> lines;
@@ -49,7 +50,8 @@ class LineChart {
 
   LineChart(this.lines, this.fromTo,
       {this.tapTextFontWeight,
-      String formatHoursMinutes = 'kk:mm',
+      // String formatHoursMinutes = 'kk:mm',
+      String formatHoursMinutes = 'HH:mm',
       String formatDayMonth = 'dd/MM'})
       : this._formatHoursMinutes = DateFormat(formatHoursMinutes),
         this._formatDayMonth = DateFormat(formatDayMonth);
@@ -137,7 +139,7 @@ class LineChart {
       String unit = indexToUnit[axisIndex];
 
       for (int c = 0; c <= (stepCount + 1); c++) {
-        double axisValue = (_minY[unit] + _yTicks[unit] * c * 2);
+        double axisValue = (_minY[unit] + _yTicks[unit] * c);
         if (axisValue < 0)
           axisValue = 0.00;
         String axisValueString;
@@ -157,7 +159,8 @@ class LineChart {
 
         TextSpan span = new TextSpan(
             style: new TextStyle(
-                color: Colors.grey[800],
+                color: Colors.grey[800], // y轴标题
+                // color: Colors.red,
                 fontWeight: FontWeight.w200,
                 fontSize: 10),
             text: axisValueString);
@@ -228,7 +231,8 @@ class LineChart {
 
       TextSpan span = new TextSpan(
           style: new TextStyle(
-              color: Colors.grey[800],
+              color: Colors.grey[800], // x轴标题颜色
+              // color: Colors.black,
               fontSize: 11.0,
               fontWeight: FontWeight.w200),
           text: _formatDateTime(tick, duration));

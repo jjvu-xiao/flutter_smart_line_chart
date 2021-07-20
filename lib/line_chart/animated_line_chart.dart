@@ -17,11 +17,13 @@ typedef TapText = String Function(String prefix, double y, String unit);
 class AnimatedLineChart extends StatefulWidget {
   final LineChart chart;
   final TapText tapText;
+  final String dateFormatPattern;
 
   const AnimatedLineChart(
     this.chart, {
     Key key,
     this.tapText,
+    this.dateFormatPattern: 'hh:mm'
   }) : super(key: key);
 
   @override
@@ -60,10 +62,11 @@ class _AnimatedLineChartState extends State<AnimatedLineChart>
         builder: (BuildContext context, BoxConstraints constraints) {
       widget.chart.initialize(constraints.maxWidth, constraints.maxHeight);
       return _GestureWrapper(
-        widget.chart,
-        _animation,
-        tapText: widget.tapText,
-      );
+          widget.chart,
+          _animation,
+          tapText: widget.tapText,
+          dateFormatPattern: widget.dateFormatPattern,
+        );
     });
   }
 }
@@ -73,12 +76,14 @@ class _GestureWrapper extends StatefulWidget {
   final LineChart _chart;
   final Animation _animation;
   final TapText tapText;
+  final String dateFormatPattern;
 
   const _GestureWrapper(
     this._chart,
     this._animation, {
     Key key,
     this.tapText,
+    this.dateFormatPattern,
   }) : super(key: key);
 
   @override
@@ -98,6 +103,7 @@ class _GestureWrapperState extends State<_GestureWrapper> {
         _horizontalDragPosition,
         animation: widget._animation,
         tapText: widget.tapText,
+        dateFormatPattern: widget.dateFormatPattern,
       ),
       onTapDown: (tap) {
         _horizontalDragActive = true;
@@ -132,10 +138,11 @@ class _AnimatedChart extends AnimatedWidget {
   final bool _horizontalDragActive;
   final double _horizontalDragPosition;
   final TapText tapText;
+  final String dateFormatPattern;
 
   _AnimatedChart(
       this._chart, this._horizontalDragActive, this._horizontalDragPosition,
-      {this.tapText, Key key, Animation animation})
+      {this.tapText, Key key, Animation animation, this.dateFormatPattern})
       : super(key: key, listenable: animation);
 
   @override
@@ -144,16 +151,15 @@ class _AnimatedChart extends AnimatedWidget {
 
     return CustomPaint(
       painter: ChartPainter(animation?.value, _chart, _horizontalDragActive,
-          _horizontalDragPosition,
-          tapText: tapText),
+          _horizontalDragPosition, tapText: tapText, dateFormatPattern: dateFormatPattern),
     );
   }
 }
 
 class ChartPainter extends CustomPainter {
   static final double _stepCount = 5;
-
-  final DateFormat _formatMonthDayHoursMinutes = DateFormat('dd/MM kk:mm');
+  // final DateFormat _formatMonthDayHoursMinutes = DateFormat('dd/MM kk:mm');
+  DateFormat _formatMonthDayHoursMinutes;
 
   final Paint _gridPainter = Paint()
     ..style = PaintingStyle.stroke
@@ -178,15 +184,17 @@ class ChartPainter extends CustomPainter {
   final bool _horizontalDragActive;
   final double _horizontalDragPosition;
 
-  final TapText tapText;
+  TapText tapText;
 
   static final TapText _defaultTapText =
       (prefix, y, unit) => '$prefix: ${y.toStringAsFixed(1)} $unit';
 
   ChartPainter(this._progress, this._chart, this._horizontalDragActive,
       this._horizontalDragPosition,
-      {TapText tapText})
-      : tapText = tapText ?? _defaultTapText;
+      {TapText tapText, dateFormatPattern}) {
+    this.tapText = tapText ?? _defaultTapText;
+    _formatMonthDayHoursMinutes = DateFormat(dateFormatPattern);
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -248,7 +256,8 @@ class ChartPainter extends CustomPainter {
           text: tapText(
             prefix,
             highlight.yValue,
-            _chart.lines[index].unit,
+            ''
+            // _chart.lines[index].unit,
           ));
       TextPainter tp = TextPainter(
           text: span,
@@ -456,7 +465,8 @@ class ChartPainter extends CustomPainter {
   void _drawRotatedText(Canvas canvas, TextPainter tp, double x, double y,
       double angleRotationInRadians) {
     canvas.save();
-    canvas.translate(x, y + tp.width);
+    // canvas.translate(x, y + tp.width);
+    canvas.translate(x, y);
     // canvas.rotate(angleRotationInRadians);
     canvas.rotate(0);
     tp.paint(canvas, Offset(0.0, 0.0));

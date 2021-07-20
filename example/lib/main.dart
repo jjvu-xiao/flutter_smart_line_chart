@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_smart_line_chart/common/pair.dart';
 import 'package:flutter_smart_line_chart/line_chart/animated_line_chart.dart';
 import 'package:flutter_smart_line_chart/line_chart/area_line_chart.dart';
 import 'package:flutter_smart_line_chart/line_chart/line_chart.dart';
+import 'package:intl/intl.dart';
 
 import 'chart_series.dart';
 
@@ -33,6 +37,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with FakeChartSeries {
   int chartIndex = 0;
+  Map<DateTime, double> datas1 = {}, data2 = {}, data3 = {};
+
+  @override
+  void initState() {
+    getDatas();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,99 +50,53 @@ class _MyHomePageState extends State<MyHomePage> with FakeChartSeries {
     Map<DateTime, double> line2 = createLine2_2();
     Map<DateTime, double> line3 = createLine2_3();
 
-    LineChart chart;
-
-    if (chartIndex == 0) {
-      chart = LineChart.fromDateTimeMaps(
-          [line1, line2, line3], [Colors.green, Colors.blue, Colors.red], ['C', 'C', 'C'],
+    LineChart chart= LineChart.fromDateTimeMaps(
+          [datas1], [Colors.green], [''],
           tapTextFontWeight: FontWeight.w400);
-    } else if (chartIndex == 1) {
-      chart = LineChart.fromDateTimeMaps(
-          [createLineAlmostSaveValues()], [Colors.green], ['C'],
-          tapTextFontWeight: FontWeight.w400);
-    } else {
-      chart = AreaLineChart.fromDateTimeMaps(
-          [line1], [Colors.red.shade900], ['C'],
-          gradients: [Pair(Colors.yellow.shade400, Colors.red.shade700)]);
-    }
 
     return Scaffold(
-      appBar: AppBar(
+   /*   appBar: AppBar(
         title: Text(widget.title),
-      ),
+      ),*/
       body: Container(
+        margin: EdgeInsets.only(top: 30, left: 20, right: 10, bottom: 30),
         child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    FlatButton(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black45),
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                      child: Text(
-                        'LineChart',
-                        style: TextStyle(
-                            color: chartIndex == 0
-                                ? Colors.black
-                                : Colors.black12),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          chartIndex = 0;
-                        });
-                      },
-                    ),
-                    FlatButton(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black45),
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                      child: Text('LineChart2',
-                          style: TextStyle(
-                              color: chartIndex == 1
-                                  ? Colors.black
-                                  : Colors.black12)),
-                      onPressed: () {
-                        setState(() {
-                          chartIndex = 1;
-                        });
-                      },
-                    ),
-                    FlatButton(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black45),
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                      child: Text('AreaChart',
-                          style: TextStyle(
-                              color: chartIndex == 2
-                                  ? Colors.black
-                                  : Colors.black12)),
-                      onPressed: () {
-                        setState(() {
-                          chartIndex = 2;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(8.0),
                 child: AnimatedLineChart(
                   chart,
                   key: UniqueKey(),
+                  dateFormatPattern: 'HH:mm',
                 ), //Unique key to force animations
-              )),
-              SizedBox(width: 200, height: 50, child: Text('')),
-            ]),
-      ),
+              )
+            ),
+          ]
+        )
+      )
     );
+  }
+
+  Future<void> getDatas() async {
+    DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
+    DateTime d = DateTime(2020);
+    debugPrint(df.format(d).toString());
+    String json = await rootBundle.loadString("assets/data.json");
+    List m = jsonDecode(json);
+    List m1 = m[0]['beforeYesterdayFlowLine'];
+    List m2 = m[0]['yesterdayFlowLine'];
+    List m3 = m[0]['todayFlowLine'];
+    m1.forEach((e) {
+      DateTime tmp = df.parse(e['fixedTime'].toString());
+      datas1[tmp] = e['dataValue'];
+    });
+    debugPrint(m.length.toString());
+    setState(() {
+
+    });
   }
 }

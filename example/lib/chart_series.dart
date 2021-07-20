@@ -25,12 +25,12 @@ class FakeChartSeries {
 
   Map<DateTime, double> createLine1() {
     Map<DateTime, double> data = {};
-    data[DateTime.now().subtract(Duration(minutes: 40))] = 14.0;
+    data[DateTime.now().subtract(Duration(minutes: 35))] = 14.0;
     data[DateTime.now().subtract(Duration(minutes: 30))] = 25.0;
-    data[DateTime.now().subtract(Duration(minutes: 22))] = 47.0;
+    data[DateTime.now().subtract(Duration(minutes: 25))] = 47.0;
     data[DateTime.now().subtract(Duration(minutes: 20))] = 21.0;
     data[DateTime.now().subtract(Duration(minutes: 15))] = 22.0;
-    data[DateTime.now().subtract(Duration(minutes: 12))] = 15.0;
+    data[DateTime.now().subtract(Duration(minutes: 10))] = 15.0;
     data[DateTime.now().subtract(Duration(minutes: 5))] = 34.0;
 
     return data;
@@ -39,6 +39,7 @@ class FakeChartSeries {
   Map<DateTime, double> createLine2() {
     Map<DateTime, double> data = {};
     // data[DateTime.now().subtract(Duration(minutes: 40))] = 13.0;
+    data[DateTime.now().subtract(Duration(minutes: 35))] = 0.45;
     data[DateTime.now().subtract(Duration(minutes: 30))] = 0.45;
     data[DateTime.now().subtract(Duration(minutes: 25))] = 0.45;
     data[DateTime.now().subtract(Duration(minutes: 20))] = 0.45;
@@ -57,6 +58,7 @@ class FakeChartSeries {
 
   Map<DateTime, double> createLine2_2() {
     Map<DateTime, double> data = {};
+    data[DateTime.now().subtract(Duration(minutes: 35))] = 0.45;
     data[DateTime.now().subtract(Duration(minutes: 30))] = 0.150;
     data[DateTime.now().subtract(Duration(minutes: 25))] = 0.110;
     data[DateTime.now().subtract(Duration(minutes: 20))] = 0.93;
@@ -75,6 +77,8 @@ class FakeChartSeries {
 
   Map<DateTime, double> createLine2_3() {
     Map<DateTime, double> data = {};
+    data[DateTime.now().subtract(Duration(minutes: 35))] = 0.382;
+    data[DateTime.now().subtract(Duration(minutes: 30))] = 0.210;
     data[DateTime.now().subtract(Duration(minutes: 30))] = 0.210;
     data[DateTime.now().subtract(Duration(minutes: 25))] = 0.220;
     data[DateTime.now().subtract(Duration(minutes: 20))] = 0.84;
